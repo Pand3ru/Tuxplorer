@@ -13,6 +13,6 @@ struct dirContent
 	char *name;
 };
 
-struct dirContent **dirGetContent(const char *path);
+struct dirContent **dirGetContent(const char *path, int *size);
 
 #endif
