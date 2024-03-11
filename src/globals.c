@@ -1,4 +1,4 @@
-#include "globals.h"
+#include "../include/globals.h"
 
 WINDOW *rightPanelWindow = NULL;
 WINDOW *leftPanelWindow = NULL;

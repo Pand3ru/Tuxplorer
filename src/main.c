@@ -1,4 +1,4 @@
-#include "draw.h"
+#include "../include/draw.h"
 
 int main(int argc, char *argv[])
 {

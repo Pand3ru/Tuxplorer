@@ -1,9 +1,10 @@
 #include<unistd.h>
+#include<stdlib.h>
 
-#include "controls.h"
-#include "globals.h"
-#include "draw.h"
-#include "dirFunctions.h"
+#include "../include/controls.h"
+#include "../include/globals.h"
+#include "../include/draw.h"
+#include "../include/dirFunctions.h"
 
 void ctrlFolderView()
 {
@@ -53,7 +54,9 @@ void ctrlFolderView()
 			case '\n':
 				if(dir[sel]->s == F_FALSE)
 				{
-					continue;
+					char command[256]; 
+					snprintf(command, sizeof(command), "nvim %s", dir[sel]->name);
+					system(command);
 				}
 				wclear(footerWindow);
 				chdir(dir[sel]->name);
@@ -65,6 +68,12 @@ void ctrlFolderView()
 			case 127: /* Backspace */
 				chdir("..");
 				return;
+			case 'q':
+				terminateWindow(rightPanelWindow);
+				terminateWindow(leftPanelWindow);
+				terminateWindow(footerWindow);
+				endwin();
+				exit(0);
 			default:
 				continue;
 		}

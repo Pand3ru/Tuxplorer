@@ -1,9 +1,9 @@
 #include<ncurses.h>
 
-#include "draw.h"
-#include "dirFunctions.h"
-#include "controls.h"
-#include "globals.h"
+#include "../include/draw.h"
+#include "../include/dirFunctions.h"
+#include "../include/controls.h"
+#include "../include/globals.h"
 
 /* temporarily here */
 struct dirContent **dir = NULL;
@@ -57,7 +57,7 @@ void drawTopbars()
 {
 	drawTopbar(rightPanelWindow, "PWD");
 	drawTopbar(leftPanelWindow, "Cool Folders");
-	drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[ctrl-c] quit");
+	drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[q] quit");
 }
 
 void drawBorders()
