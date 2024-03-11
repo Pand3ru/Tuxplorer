@@ -1,37 +1,27 @@
-# Makefile
+CC = gcc
+CFLAGS = -Wall -Iinclude
+LDFLAGS = -lncurses
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+SOURCES = $(wildcard $(SRC_DIR)/*.c)
+OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
+TARGET = $(BIN_DIR)/tuxplorer
 
-# Compiler and Compiler Flags
-CC=gcc
-CFLAGS=-g -Wall
-LIBS=-lncurses
+all: directories $(TARGET)
 
-# The build target executable
-TARGET=debug_TuxPlorer
+directories:
+	mkdir -p $(BIN_DIR) $(OBJ_DIR)
 
-# Object files
-OBJS=main.o draw.o dirFunctions.o globals.o controls.o
+$(TARGET): $(OBJECTS)
+	@echo "Linking: " $(OBJECTS) " into " $(TARGET)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-all: $(TARGET)
-
-$(TARGET): $(OBJS)
-	$(CC) -o $(TARGET) $(OBJS) $(LIBS)
-
-main.o : main.c draw.h
-	$(CC) $(CFLAGS) -c main.c
-
-draw.o : draw.c draw.h
-	$(CC) $(CFLAGS) -c draw.c
-
-dirFunctions.o : dirFunctions.c dirFunctions.h
-	$(CC) $(CFLAGS) -c dirFunctions.c
-
-globals.o : globals.c globals.h
-	$(CC) $(CFLAGS) -c globals.c
-
-controlls.o : controls.c controls.h
-	$(CC) $(CFLAGS) -c controls.c
-
-.PHONY: clean
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@echo "Compiling: " $<
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(TARGET) $(OBJS)
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
+
+.PHONY: all clean directories
