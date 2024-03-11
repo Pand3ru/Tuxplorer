@@ -2,9 +2,11 @@
 
 #include "draw.h"
 #include "dirFunctions.h"
+#include "controls.h"
+#include "globals.h"
 
 /* temporarily here */
-struct dirContent **dir;
+struct dirContent **dir = NULL;
 
 /* Function that creates a WINDOW* instance */
 WINDOW *createWindow(int h, int w, int startx, int starty)
@@ -34,87 +36,74 @@ void drawTopbar(WINDOW *w, char *text)
 
 }
 
-/* Needs refactoring ASAP */
-void drawLayout(const char *path)
+void initScreen()
 {
-	WINDOW *rightPanelWindow, *leftPanelWindow, *footerWindow;
-	int amt;
-
 	initscr();
+	start_color();
 	noecho();
 	cbreak();
 	curs_set(0);
-
 	refresh();
-	
+}
+
+void createWindows()
+{
 	rightPanelWindow = createWindow(LINES-3, COLS*0.7, COLS*0.3, 0);
 	leftPanelWindow = createWindow(LINES-3, COLS*0.3, 0, 0);
 	footerWindow = createWindow(3, COLS-1, 0, LINES-3);
+}
 
+void drawTopbars()
+{
 	drawTopbar(rightPanelWindow, "PWD");
 	drawTopbar(leftPanelWindow, "Cool Folders");
-	drawTopbar(footerWindow, "Explain Vim Motions to me please uwu");
+	drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[ctrl-c] quit");
+}
 
-	dir = dirGetContent(path, &amt);
+void drawBorders()
+{
 
-	printFolderMenu(rightPanelWindow, 0);
-
+	box(rightPanelWindow, 0, 0);
 	box(leftPanelWindow, 0, 0);
 	box(footerWindow, 0, 0);
+	wrefresh(rightPanelWindow);
 	wrefresh(leftPanelWindow);
 	wrefresh(footerWindow);
-
-	int sel = 0;
-
-	while(1)
-	{
-		char c = wgetch(rightPanelWindow);
-
-		switch(c)
-		{
-			case 'j':
-				sel = (sel + 1) % amt;
-				break;
-			case 'k':
-				sel = (sel - 1 + amt) % amt;
-				break;
-			case '\n':
-				wclear(footerWindow);
-				path +=
-				mvwprintw(footerWindow, 1, 1, "%s", dir[sel]->name);
-			/*	if(dir[sel]->s == F_TRUE)
-				{
-					drawLayout(dir[sel]->name);
-				}*/
-			default:
-				break;
-		}
-		printFolderMenu(rightPanelWindow,  sel%amt);
-		box(leftPanelWindow, 0, 0);
-		box(footerWindow, 0, 0);
-		wrefresh(leftPanelWindow);
-		wrefresh(footerWindow);
-	}
-	endwin();
+}
+/* Function that draws the basic Layout */
+void drawLayout()
+{
+	initScreen();
+	createWindows();
+	drawTopbars();
+	drawBorders();
+	ctrlFolderView();
 }
 
 /* Refactor this function in order to work for every window. Not just one specific one */
-void printFolderMenu(WINDOW *w, int highlight)
+void printFolderMenu(WINDOW *w, int highlight, int start)
 {
 	int count = 3;
 
-	for(int i = 0; dir[i] != NULL; i++)
+	init_pair(1, COLOR_WHITE, COLOR_BLACK);
+	init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
+
+	for(int i = start; dir[i] != NULL; i++)
 	{
 		if(i == highlight)
 		{
 			wattron(w, A_REVERSE);
+			wattron(w, COLOR_PAIR(1));
 			mvwprintw(w, count, 1, "\t%s\n", dir[i]->name);
 			wattroff(w, A_REVERSE);
+			wattroff(w, COLOR_PAIR(1));
 		} else {
 			if(dir[i]->s == F_TRUE)
 			{
 				wattron(w, A_BOLD);
+				wattron(w, COLOR_PAIR(2));
 				mvwprintw(w, count, 1, "\t%s\n", dir[i]->name);
+				wattroff(w, COLOR_PAIR(2));
 				wattroff(w, A_BOLD);
 			} else {
 				mvwprintw(w, count, 1, "\t%s\n", dir[i]->name);
@@ -122,6 +111,5 @@ void printFolderMenu(WINDOW *w, int highlight)
 		}
 		count++;
 	}
-	box(w, 0, 0);
-	wrefresh(w);
+	drawBorders();
 }

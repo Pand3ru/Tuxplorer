@@ -6,7 +6,10 @@
 WINDOW* createWindow(int height, int width, int startx, int starty);
 void terminateWindow(WINDOW *w);
 void drawTopbar(WINDOW *w, char *text);
-void drawLayout(const char *path);
-void printFolderMenu(WINDOW *w, int highlight);
+void drawLayout();
+void printFolderMenu(WINDOW *w, int highlight, int start);
+void initScreen();
+void createWindows();
+void drawTopbars();
 
 #endif

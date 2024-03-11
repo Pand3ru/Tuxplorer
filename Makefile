@@ -9,7 +9,7 @@ LIBS=-lncurses
 TARGET=debug_TuxPlorer
 
 # Object files
-OBJS=main.o draw.o dirFunctions.o
+OBJS=main.o draw.o dirFunctions.o globals.o controls.o
 
 all: $(TARGET)
 
@@ -21,8 +21,15 @@ main.o : main.c draw.h
 
 draw.o : draw.c draw.h
 	$(CC) $(CFLAGS) -c draw.c
+
 dirFunctions.o : dirFunctions.c dirFunctions.h
 	$(CC) $(CFLAGS) -c dirFunctions.c
+
+globals.o : globals.c globals.h
+	$(CC) $(CFLAGS) -c globals.c
+
+controlls.o : controls.c controls.h
+	$(CC) $(CFLAGS) -c controls.c
 
 .PHONY: clean
 
