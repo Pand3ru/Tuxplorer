@@ -7,3 +7,5 @@ WINDOW *footerWindow = NULL;
 int ignoreInvis = 1;
 
 char *textEditor = "nvim"; // Change the name to your prefered Text Editor.
+
+char *homeDir = NULL;

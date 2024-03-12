@@ -13,4 +13,6 @@ extern int ignoreInvis;
 
 extern char* textEditor;
 
+extern char *homeDir;
+
 #endif

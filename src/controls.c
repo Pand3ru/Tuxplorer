@@ -23,7 +23,7 @@ void ctrlFolderView()
 
 	dir = dirGetContent(path, &amt);
 
-	printFolderMenu(rightPanelWindow, 0, start);
+	printFolderMenu(rightPanelWindow, 0, start, 3, dir);
 
 	while(boolean)
 	{
@@ -120,7 +120,7 @@ void ctrlFolderView()
 		mvwprintw(leftPanelWindow, 5, 1, "Input: %s at %p", input, &input);
 		mvwprintw(leftPanelWindow, 6, 1, "Lenght: %lu", 12 + strlen(dir[sel]->name));
 
-		printFolderMenu(rightPanelWindow,  sel%amt, start);
+		printFolderMenu(rightPanelWindow,  sel%amt, start, 3, dir);
 		drawTopbars();
 	}
 	endwin();

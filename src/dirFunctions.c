@@ -88,3 +88,108 @@ struct dirContent **dirGetContent(const char *path, int *amt)
 
 	return content;
 }
+
+struct dirContent** dirGetPinned(int *size)
+{
+	homeDir = getenv("HOME");	
+	if(homeDir == NULL)
+	{
+		return NULL;
+	}
+	
+	int bufSize = 1024, i = 0;
+	char *filePath = malloc(bufSize);
+
+	int needed = snprintf(filePath, bufSize, "%s/.config/tuxplorer/config.ini", homeDir);
+
+	char *tmpFilePath = realloc(filePath, needed + 1);
+
+	if(tmpFilePath != NULL)
+	{
+		filePath = tmpFilePath;
+	}
+
+	/* Config Path aquired */
+
+	FILE* fptr = fopen(filePath, "r");
+
+	if(fptr == NULL)
+	{
+		free(filePath);
+		return NULL;
+	}
+	
+	char *currentLine;
+
+	struct dirContent **content = NULL;
+
+	while((currentLine = readLine(fptr)) != NULL)
+	{
+		content = realloc(content, (i + 1) * sizeof(struct dirContent*));
+		if(content == NULL)
+		{
+			return NULL;
+		}
+
+		content[i] = malloc(sizeof(struct dirContent));
+		if(content[i] == NULL)
+		{
+			return NULL;
+		}
+		char* token = strtok(currentLine, " ");
+		content[i]->name = strdup(token);
+
+		token = strtok(NULL, " ");
+		content[i]->path = strdup(token);
+		content[i]->s = F_TRUE;
+
+		free(currentLine);
+		i++;
+	}
+	free(filePath);
+	*size = i;
+	return content;
+}
+
+char *readLine(FILE *file) 
+{
+    if (file == NULL)
+    {
+        return NULL;
+    }
+
+    int maximumLineLength = 128;
+    char *lineBuffer = malloc(maximumLineLength);
+    if (lineBuffer == NULL)
+    {
+        return NULL;
+    }
+
+    int count = 0;
+    char ch = getc(file);
+    
+    if(ch == EOF)
+    {
+	    return NULL;
+    }
+
+    while ((ch != '\n') && (ch != EOF)) 
+    {
+        if (count == maximumLineLength - 1) 
+	{
+            maximumLineLength += 128;
+            char *tempBuffer = realloc(lineBuffer, maximumLineLength);
+            if (tempBuffer == NULL) 
+	    {
+                free(lineBuffer);
+                return NULL;
+            }
+            lineBuffer = tempBuffer;
+        }
+        lineBuffer[count++] = ch;
+        ch = getc(file);
+    }
+
+    lineBuffer[count] = '\0';
+    return lineBuffer; 
+}

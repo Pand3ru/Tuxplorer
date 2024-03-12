@@ -77,24 +77,25 @@ void drawLayout()
 	createWindows();
 	drawTopbars();
 	drawBorders();
+	/* Here is the part where I have to insert window switching */
 	ctrlFolderView();
 }
 
 /* Refactor this function in order to work for every window. Not just one specific one */
-void printFolderMenu(WINDOW *w, int highlight, int start)
+void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dirContent **dire)
 {
-	int count = 3;
+	int count = offset;
 
 	init_pair(1, COLOR_WHITE, COLOR_BLACK);
 	init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
 
-	for(int i = start; dir[i] != NULL; i++)
+	for(int i = start; dire[i] != NULL; i++)
 	{
 		if(i == highlight)
 		{
 			wattron(w, A_REVERSE);
 			wattron(w, COLOR_PAIR(1));
-			mvwprintw(w, count, 1, "\t%s\n", dir[i]->name);
+			mvwprintw(w, count, 1, "\t%s\n", dire[i]->name);
 			wattroff(w, A_REVERSE);
 			wattroff(w, COLOR_PAIR(1));
 		} else {
@@ -102,14 +103,16 @@ void printFolderMenu(WINDOW *w, int highlight, int start)
 			{
 				wattron(w, A_BOLD);
 				wattron(w, COLOR_PAIR(2));
-				mvwprintw(w, count, 1, "\t%s\n", dir[i]->name);
+				mvwprintw(w, count, 1, "\t%s\n", dire[i]->name);
 				wattroff(w, COLOR_PAIR(2));
 				wattroff(w, A_BOLD);
 			} else {
-				mvwprintw(w, count, 1, "\t%s\n", dir[i]->name);
+				mvwprintw(w, count, 1, "\t%s\n", dire[i]->name);
 			}
 		}
 		count++;
 	}
 	drawBorders();
 }
+
+
