@@ -4,5 +4,6 @@
 void ctrlFolderView();
 int promtConfirmation();
 void promtMakeInputReady();
+void promtGetInput(char *input, char *text);
 
 #endif
