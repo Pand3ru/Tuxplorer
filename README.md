@@ -10,11 +10,11 @@ Tuxplorer is a terminal-based file explorer, aimed at bringing the power and sim
 - **File Viewing**: List files and directories in the current directory.
 - **Vim Integration**: Open and edit text files directly in Vim by pressing enter on a selected file.
 - **File Operations**: Perform common file operations such as rename, delete, and create directly within Tuxplorer.
+- **Shortcuts**: Quick access shortcuts to frequently used directories such as Desktop, Documents, etc.
 
 ## Planned Features
 
 - **Config Files**: Customize Tuxplorer's behavior and appearance through user-defined configuration files.
-- **Shortcuts**: Quick access shortcuts to frequently used directories such as Desktop, Documents, etc.
 - **Pin Folders**: Ability to pin favorite folders for easy access.
 
 ## Getting Started
@@ -31,6 +31,16 @@ To try out Tuxplorer, you'll need to have `gcc` and `ncurses` installed on your 
 `make`
 4. Run Tuxplorer:
 `./bin/tuxplorer`
+
+**NOTE**: Makefile currently lacks config creator. Config as of now only stores shortcuts. If you want to try: 
+1. Go into .config Folder
+`cd .config`
+2. Create tuxplorer folder
+`mkdir tuxplorer`
+3. create 'config.ini'
+`cd tuxplorer && touch config.ini`
+3. Edit with following format:
+`Displayname Path(starting with /home`
 
 
 ## Contributing
