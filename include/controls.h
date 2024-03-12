@@ -2,5 +2,7 @@
 #define CONTROLS_H
 
 void ctrlFolderView();
+int promtConfirmation();
+void promtMakeInputReady();
 
 #endif

@@ -57,7 +57,7 @@ void drawTopbars()
 {
 	drawTopbar(rightPanelWindow, "PWD");
 	drawTopbar(leftPanelWindow, "Cool Folders");
-	drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[q] quit");
+	drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[r] rename\t[d] delete file\t[q] quit");
 }
 
 void drawBorders()

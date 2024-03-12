@@ -11,4 +11,6 @@ extern struct dirContent **dir;
 
 extern int ignoreInvis;
 
+extern char* textEditor;
+
 #endif
