@@ -6,7 +6,7 @@
 #include "../include/globals.h"
 
 /* Function to return a **dirContent so I can get Dir Content quickly. Probably slow af */
-struct dirContent **dirGetContent(const char *path, int *amt)
+struct dirContent **dirGetContent(const char *path)
 {
 	DIR *d;
 	struct dirent *entries;
@@ -84,12 +84,11 @@ struct dirContent **dirGetContent(const char *path, int *amt)
 	}
 	content = final;
 	content[i] = NULL;
-	*amt = i;
+	amount_folder = i;
 
 	return content;
 }
-
-struct dirContent** dirGetPinned(int *size)
+struct dirContent** dirGetPinned()
 {
 	homeDir = getenv("HOME");	
 	if(homeDir == NULL)
@@ -112,14 +111,10 @@ struct dirContent** dirGetPinned(int *size)
 	/* Config Path aquired */
 
 	FILE* fptr = fopen(filePath, "r");
+	free(filePath);
 
-	if(fptr == NULL)
-	{
-		free(filePath);
-		return NULL;
-	}
-	
-	char *currentLine;
+
+	char *currentLine, *token;
 
 	struct dirContent **content = NULL;
 
@@ -128,26 +123,46 @@ struct dirContent** dirGetPinned(int *size)
 		content = realloc(content, (i + 1) * sizeof(struct dirContent*));
 		if(content == NULL)
 		{
+		    if (fptr != NULL) {
+			fclose(fptr);
+		    }
+		    for (int j = 0; j < i; j++) {
+			free(content[j]->name);
+			free(content[j]->path);
+			free(content[j]);
+		    }
+		        free(content);
+			free(currentLine);
 			return NULL;
 		}
 
 		content[i] = malloc(sizeof(struct dirContent));
 		if(content[i] == NULL)
 		{
+		    if (fptr != NULL) {
+			fclose(fptr);
+		    }
+		    for (int j = 0; j < i; j++) {
+			free(content[j]->name);
+			free(content[j]->path);
+			free(content[j]);
+		    }
+		        free(content);
+			free(currentLine);
 			return NULL;
 		}
-		char* token = strtok(currentLine, " ");
-		content[i]->name = strdup(token);
+		token = strtok(currentLine, " ");
+		content[i]->name = token ? strdup(token) : strdup("");
 
 		token = strtok(NULL, " ");
-		content[i]->path = strdup(token);
+		content[i]->path = token ? strdup(token) : strdup("");
 		content[i]->s = F_TRUE;
 
 		free(currentLine);
 		i++;
 	}
-	free(filePath);
-	*size = i;
+	fclose(fptr);
+	amount_pins = i;
 	return content;
 }
 

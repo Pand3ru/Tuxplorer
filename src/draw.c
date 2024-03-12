@@ -5,9 +5,6 @@
 #include "../include/controls.h"
 #include "../include/globals.h"
 
-/* temporarily here */
-struct dirContent **dir = NULL;
-
 /* Function that creates a WINDOW* instance */
 WINDOW *createWindow(int h, int w, int startx, int starty)
 {
@@ -40,6 +37,7 @@ void initScreen()
 {
 	initscr();
 	start_color();
+	keypad(stdscr, TRUE);
 	noecho();
 	cbreak();
 	curs_set(0);
@@ -57,7 +55,13 @@ void drawTopbars()
 {
 	drawTopbar(rightPanelWindow, "PWD");
 	drawTopbar(leftPanelWindow, "Cool Folders");
-	drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[r] rename\t[d] delete file\t[c] create file\t[q] quit");
+
+	if(!isInWindowSelection && selectedWindow == 1)
+	{
+	      drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[r] rename\t[d] delete file\t[c] create file\t[ESC] window selection \t[q] quit");
+	} else {
+		drawTopbar(footerWindow, "[j] down\t[k] up\t[ESC] window selection \t[q] quit");
+	}
 }
 
 void drawBorders()
@@ -77,19 +81,34 @@ void drawLayout()
 	createWindows();
 	drawTopbars();
 	drawBorders();
-	/* Here is the part where I have to insert window switching */
-	ctrlFolderView();
+
+	if(isInWindowSelection)
+	{
+		windowSelector();
+	} else {
+		switch(selectedWindow)
+		{
+			case 1:
+				ctrlFolderView();
+				return;
+			case 0:
+				ctrlPinView();
+				return;
+			default:
+				return;
+		}
+	}
+	
 }
 
-/* Refactor this function in order to work for every window. Not just one specific one */
-void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dirContent **dire)
+void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dirContent **dire, int amount)
 {
 	int count = offset;
 
 	init_pair(1, COLOR_WHITE, COLOR_BLACK);
 	init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
 
-	for(int i = start; dire[i] != NULL; i++)
+	for(int i = start; i < amount; i++)
 	{
 		if(i == highlight)
 		{
@@ -97,9 +116,9 @@ void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dir
 			wattron(w, COLOR_PAIR(1));
 			mvwprintw(w, count, 1, "\t%s\n", dire[i]->name);
 			wattroff(w, A_REVERSE);
-			wattroff(w, COLOR_PAIR(1));
+			wattroff(w, COLOR_PAIR(1)); 
 		} else {
-			if(dir[i]->s == F_TRUE)
+			if(dire[i]->s == F_TRUE)
 			{
 				wattron(w, A_BOLD);
 				wattron(w, COLOR_PAIR(2));
@@ -113,6 +132,19 @@ void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dir
 		count++;
 	}
 	drawBorders();
+
+	if(selectedWindow == 1)
+	{
+		wattron(rightPanelWindow, COLOR_PAIR(2));
+		box(rightPanelWindow, 0, 0);
+		wattroff(rightPanelWindow, COLOR_PAIR(2));
+		wrefresh(rightPanelWindow);
+	} else {
+		wattron(leftPanelWindow, COLOR_PAIR(2));
+		box(leftPanelWindow, 0, 0);
+		wattroff(leftPanelWindow, COLOR_PAIR(2));
+		wrefresh(leftPanelWindow);
+	}
 }
 
 

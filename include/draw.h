@@ -12,6 +12,6 @@ void drawLayout();
 void initScreen();
 void createWindows();
 void drawTopbars();
-void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dirContent **dire);
+void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dirContent **dire, int amount);
 
 #endif

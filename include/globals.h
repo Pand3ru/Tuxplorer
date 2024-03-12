@@ -8,11 +8,20 @@ extern WINDOW *leftPanelWindow;
 extern WINDOW *footerWindow;
 
 extern struct dirContent **dir;
+extern struct dirContent **pins;
 
 extern int ignoreInvis;
+
+extern int isInWindowSelection;
+
+extern int selectedWindow;
 
 extern char* textEditor;
 
 extern char *homeDir;
+
+extern int amount_pins;
+
+extern int amount_folder;
 
 #endif
