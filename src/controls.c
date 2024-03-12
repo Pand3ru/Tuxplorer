@@ -1,3 +1,4 @@
+#include<stdio.h>
 #include<unistd.h>
 #include<stdlib.h>
 #include<string.h>
@@ -7,6 +8,114 @@
 #include "../include/globals.h"
 #include "../include/draw.h"
 #include "../include/dirFunctions.h"
+
+void windowSelector()
+{
+	char cwd[1024];
+	int amt, amt2;
+
+	pins = dirGetPinned(&amt);
+	dir = dirGetContent(getcwd(cwd, sizeof(cwd)), &amt2);
+
+	printFolderMenu(leftPanelWindow, -1, 0, 2, pins);
+	printFolderMenu(rightPanelWindow, -1, 0, 3, dir);
+	while(1)
+	{
+		char ch = getch();
+		switch(ch)
+		{
+			case 'j':
+			case 'k':
+				selectedWindow = !selectedWindow;
+				break;
+			case 'q':
+				terminateWindow(rightPanelWindow);
+				terminateWindow(leftPanelWindow);
+				terminateWindow(footerWindow);
+				endwin();
+				exit(0);
+				return;
+			case '\n':
+				isInWindowSelection = 0;
+				if(selectedWindow == 1)
+				{
+					ctrlFolderView();
+					return;
+				} else {
+					ctrlPinView();
+					return;
+				}
+			default:
+				continue;
+		}
+		printFolderMenu(leftPanelWindow, -1, 0, 2, pins);
+		printFolderMenu(rightPanelWindow, -1, 0, 3, dir);
+	}
+}
+void ctrlPinView()
+{
+	int amt, sel = 0, start = 0, itemAmount = LINES-4-4; /* Calculates number of max. Printed items */
+
+	int boolean = 1;
+
+	dirGetPinned(&amt);
+
+	printFolderMenu(leftPanelWindow, 0, start, 2, pins);
+	printFolderMenu(rightPanelWindow, -1, 0, 3, dir);
+
+	while(boolean)
+	{
+		char c = wgetch(leftPanelWindow);
+
+		switch(c)
+		{
+			case 'j':
+				if(sel >= itemAmount && !((itemAmount + start) > sel))
+				{
+					start++;
+				} 
+				if(sel == amt - 1)
+				{
+					start = 0;
+				}
+				sel = (sel + 1) % amt;
+				break;
+			case 'k':
+				if(sel <= start && sel != 0)
+				{
+					start--;
+				}
+				else if(sel == 0 && amt > itemAmount)
+				{
+					start = amt-itemAmount-1;
+				}
+				sel = (sel - 1 + amt) % amt;
+				break;
+			case '\n':
+				wclear(footerWindow);
+				chdir(pins[sel]->path);
+				boolean = 0;
+				selectedWindow = 1;
+				// Find a way to switch back. Maybe change void? if return = 1 start ctrlFolderView
+				return;
+			case 'q':
+				terminateWindow(rightPanelWindow);
+				terminateWindow(leftPanelWindow);
+				terminateWindow(footerWindow);
+				endwin();
+				exit(0);
+			case 27: /* Esc */
+				isInWindowSelection = 1;
+				return;
+			default:
+				continue;
+		}
+		printFolderMenu(leftPanelWindow,  sel%amt, start, 2, pins);
+		drawTopbars();
+	}
+	endwin();
+
+}
 
 void ctrlFolderView()
 {
@@ -24,6 +133,7 @@ void ctrlFolderView()
 	dir = dirGetContent(path, &amt);
 
 	printFolderMenu(rightPanelWindow, 0, start, 3, dir);
+	printFolderMenu(leftPanelWindow, -1, 0, 2, pins);
 
 	while(boolean)
 	{
@@ -107,19 +217,12 @@ void ctrlFolderView()
 				FILE* f = fopen(input, "a");
 				fclose(f);
 				return;
-
+			case 27: /* Esc */
+				isInWindowSelection = 1;
+				return;
 			default:
 				continue;
 		}
-		wclear(leftPanelWindow);
-
-		mvwprintw(leftPanelWindow, 1, 1, "Selected Item: %d", sel);
-		mvwprintw(leftPanelWindow, 2, 1, "Offset: %d", start);
-		mvwprintw(leftPanelWindow, 3, 1, "Total items: %d", amt);
-		mvwprintw(leftPanelWindow, 4, 1, "Total page items: %d", itemAmount);
-		mvwprintw(leftPanelWindow, 5, 1, "Input: %s at %p", input, &input);
-		mvwprintw(leftPanelWindow, 6, 1, "Lenght: %lu", 12 + strlen(dir[sel]->name));
-
 		printFolderMenu(rightPanelWindow,  sel%amt, start, 3, dir);
 		drawTopbars();
 	}

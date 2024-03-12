@@ -88,7 +88,6 @@ struct dirContent **dirGetContent(const char *path, int *amt)
 
 	return content;
 }
-
 struct dirContent** dirGetPinned(int *size)
 {
 	homeDir = getenv("HOME");	
@@ -112,14 +111,10 @@ struct dirContent** dirGetPinned(int *size)
 	/* Config Path aquired */
 
 	FILE* fptr = fopen(filePath, "r");
+	free(filePath);
 
-	if(fptr == NULL)
-	{
-		free(filePath);
-		return NULL;
-	}
-	
-	char *currentLine;
+
+	char *currentLine, *token;
 
 	struct dirContent **content = NULL;
 
@@ -128,25 +123,27 @@ struct dirContent** dirGetPinned(int *size)
 		content = realloc(content, (i + 1) * sizeof(struct dirContent*));
 		if(content == NULL)
 		{
+			free(currentLine);
 			return NULL;
 		}
 
 		content[i] = malloc(sizeof(struct dirContent));
 		if(content[i] == NULL)
 		{
+			free(content);
 			return NULL;
 		}
-		char* token = strtok(currentLine, " ");
-		content[i]->name = strdup(token);
+		token = strtok(currentLine, " ");
+		content[i]->name = strdup(token); // Somethings wrong
 
 		token = strtok(NULL, " ");
-		content[i]->path = strdup(token);
+		content[i]->path = strdup(token); // This time here lol
 		content[i]->s = F_TRUE;
 
 		free(currentLine);
 		i++;
 	}
-	free(filePath);
+	fclose(fptr);
 	*size = i;
 	return content;
 }
