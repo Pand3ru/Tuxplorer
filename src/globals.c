@@ -16,3 +16,6 @@ char *homeDir = NULL;
 
 struct dirContent **dir = NULL;
 struct dirContent **pins = NULL;
+
+int amount_pins;
+int amount_folder;

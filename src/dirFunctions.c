@@ -6,7 +6,7 @@
 #include "../include/globals.h"
 
 /* Function to return a **dirContent so I can get Dir Content quickly. Probably slow af */
-struct dirContent **dirGetContent(const char *path, int *amt)
+struct dirContent **dirGetContent(const char *path)
 {
 	DIR *d;
 	struct dirent *entries;
@@ -84,11 +84,11 @@ struct dirContent **dirGetContent(const char *path, int *amt)
 	}
 	content = final;
 	content[i] = NULL;
-	*amt = i;
+	amount_folder = i;
 
 	return content;
 }
-struct dirContent** dirGetPinned(int *size)
+struct dirContent** dirGetPinned()
 {
 	homeDir = getenv("HOME");	
 	if(homeDir == NULL)
@@ -123,6 +123,15 @@ struct dirContent** dirGetPinned(int *size)
 		content = realloc(content, (i + 1) * sizeof(struct dirContent*));
 		if(content == NULL)
 		{
+		    if (fptr != NULL) {
+			fclose(fptr);
+		    }
+		    for (int j = 0; j < i; j++) {
+			free(content[j]->name);
+			free(content[j]->path);
+			free(content[j]);
+		    }
+		        free(content);
 			free(currentLine);
 			return NULL;
 		}
@@ -130,21 +139,30 @@ struct dirContent** dirGetPinned(int *size)
 		content[i] = malloc(sizeof(struct dirContent));
 		if(content[i] == NULL)
 		{
-			free(content);
+		    if (fptr != NULL) {
+			fclose(fptr);
+		    }
+		    for (int j = 0; j < i; j++) {
+			free(content[j]->name);
+			free(content[j]->path);
+			free(content[j]);
+		    }
+		        free(content);
+			free(currentLine);
 			return NULL;
 		}
 		token = strtok(currentLine, " ");
-		content[i]->name = strdup(token); // Somethings wrong
+		content[i]->name = token ? strdup(token) : strdup("");
 
 		token = strtok(NULL, " ");
-		content[i]->path = strdup(token); // This time here lol
+		content[i]->path = token ? strdup(token) : strdup("");
 		content[i]->s = F_TRUE;
 
 		free(currentLine);
 		i++;
 	}
 	fclose(fptr);
-	*size = i;
+	amount_pins = i;
 	return content;
 }
 

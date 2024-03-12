@@ -1,5 +1,4 @@
 #include<ncurses.h>
-#include<stdlib.h>
 
 #include "../include/draw.h"
 #include "../include/dirFunctions.h"
@@ -102,14 +101,14 @@ void drawLayout()
 	
 }
 
-void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dirContent **dire)
+void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dirContent **dire, int amount)
 {
 	int count = offset;
 
 	init_pair(1, COLOR_WHITE, COLOR_BLACK);
 	init_pair(2, COLOR_MAGENTA, COLOR_BLACK);
 
-	for(int i = start; dire[i] != NULL; i++)
+	for(int i = start; i < amount; i++)
 	{
 		if(i == highlight)
 		{
@@ -117,7 +116,7 @@ void printFolderMenu(WINDOW *w, int highlight, int start, int offset, struct dir
 			wattron(w, COLOR_PAIR(1));
 			mvwprintw(w, count, 1, "\t%s\n", dire[i]->name);
 			wattroff(w, A_REVERSE);
-			wattroff(w, COLOR_PAIR(1));
+			wattroff(w, COLOR_PAIR(1)); 
 		} else {
 			if(dire[i]->s == F_TRUE)
 			{

@@ -12,13 +12,12 @@
 void windowSelector()
 {
 	char cwd[1024];
-	int amt, amt2;
 
-	pins = dirGetPinned(&amt);
-	dir = dirGetContent(getcwd(cwd, sizeof(cwd)), &amt2);
+	pins = dirGetPinned();
+	dir = dirGetContent(getcwd(cwd, sizeof(cwd)));
 
-	printFolderMenu(leftPanelWindow, -1, 0, 2, pins);
-	printFolderMenu(rightPanelWindow, -1, 0, 3, dir);
+	printFolderMenu(leftPanelWindow, -1, 0, 2, pins, amount_pins);
+	printFolderMenu(rightPanelWindow, -1, 0, 3, dir, amount_folder);
 	while(1)
 	{
 		char ch = getch();
@@ -48,20 +47,20 @@ void windowSelector()
 			default:
 				continue;
 		}
-		printFolderMenu(leftPanelWindow, -1, 0, 2, pins);
-		printFolderMenu(rightPanelWindow, -1, 0, 3, dir);
+		printFolderMenu(leftPanelWindow, -1, 0, 2, pins, amount_pins);
+		printFolderMenu(rightPanelWindow, -1, 0, 3, dir, amount_folder);
 	}
 }
 void ctrlPinView()
 {
-	int amt, sel = 0, start = 0, itemAmount = LINES-4-4; /* Calculates number of max. Printed items */
+	int sel = 0, start = 0, itemAmount = LINES-4-4; /* Calculates number of max. Printed items */
 
 	int boolean = 1;
 
-	dirGetPinned(&amt);
+	dirGetPinned();
 
-	printFolderMenu(leftPanelWindow, 0, start, 2, pins);
-	printFolderMenu(rightPanelWindow, -1, 0, 3, dir);
+	printFolderMenu(leftPanelWindow, 0, start, 2, pins, amount_pins);
+	printFolderMenu(rightPanelWindow, -1, 0, 3, dir, amount_folder);
 
 	while(boolean)
 	{
@@ -74,22 +73,22 @@ void ctrlPinView()
 				{
 					start++;
 				} 
-				if(sel == amt - 1)
+				if(sel == amount_pins - 1)
 				{
 					start = 0;
 				}
-				sel = (sel + 1) % amt;
+				sel = (sel + 1) % amount_pins;
 				break;
 			case 'k':
 				if(sel <= start && sel != 0)
 				{
 					start--;
 				}
-				else if(sel == 0 && amt > itemAmount)
+				else if(sel == 0 && amount_pins > itemAmount)
 				{
-					start = amt-itemAmount-1;
+					start = amount_pins-itemAmount-1;
 				}
-				sel = (sel - 1 + amt) % amt;
+				sel = (sel - 1 + amount_pins) % amount_pins;
 				break;
 			case '\n':
 				wclear(footerWindow);
@@ -110,7 +109,7 @@ void ctrlPinView()
 			default:
 				continue;
 		}
-		printFolderMenu(leftPanelWindow,  sel%amt, start, 2, pins);
+		printFolderMenu(leftPanelWindow,  sel%amount_pins, start, 2, pins, amount_pins);
 		drawTopbars();
 	}
 	endwin();
@@ -119,7 +118,7 @@ void ctrlPinView()
 
 void ctrlFolderView()
 {
-	int amt, sel = 0, start = 0, itemAmount = LINES-4-4; /* Calculates number of max. Printed items */
+	int sel = 0, start = 0, itemAmount = LINES-4-4; /* Calculates number of max. Printed items */
 
 	int boolean = 1;
 
@@ -130,10 +129,10 @@ void ctrlFolderView()
 		printf("Error reading Path");
 	}
 
-	dir = dirGetContent(path, &amt);
+	dir = dirGetContent(path);
 
-	printFolderMenu(rightPanelWindow, 0, start, 3, dir);
-	printFolderMenu(leftPanelWindow, -1, 0, 2, pins);
+	printFolderMenu(rightPanelWindow, 0, start, 3, dir, amount_folder);
+	printFolderMenu(leftPanelWindow, -1, 0, 2, pins, amount_pins);
 
 	while(boolean)
 	{
@@ -146,22 +145,22 @@ void ctrlFolderView()
 				{
 					start++;
 				} 
-				if(sel == amt - 1)
+				if(sel == amount_folder - 1)
 				{
 					start = 0;
 				}
-				sel = (sel + 1) % amt;
+				sel = (sel + 1) % amount_folder;
 				break;
 			case 'k':
 				if(sel <= start && sel != 0)
 				{
 					start--;
 				}
-				else if(sel == 0 && amt > itemAmount)
+				else if(sel == 0 && amount_folder > itemAmount)
 				{
-					start = amt-itemAmount-1;
+					start = amount_folder-itemAmount-1;
 				}
-				sel = (sel - 1 + amt) % amt;
+				sel = (sel - 1 + amount_folder) % amount_folder;
 				break;
 			case '\n':
 				if(dir[sel]->s == F_FALSE)
@@ -223,7 +222,7 @@ void ctrlFolderView()
 			default:
 				continue;
 		}
-		printFolderMenu(rightPanelWindow,  sel%amt, start, 3, dir);
+		printFolderMenu(rightPanelWindow,  sel%amount_folder, start, 3, dir, amount_folder);
 		drawTopbars();
 	}
 	endwin();

@@ -20,4 +20,8 @@ extern char* textEditor;
 
 extern char *homeDir;
 
+extern int amount_pins;
+
+extern int amount_folder;
+
 #endif
