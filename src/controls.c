@@ -1,5 +1,7 @@
 #include<unistd.h>
 #include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
 
 #include "../include/controls.h"
 #include "../include/globals.h"
@@ -12,7 +14,7 @@ void ctrlFolderView()
 
 	int boolean = 1;
 
-	char path[1024];
+	char path[1024], input[25];
 
 	if(getcwd(path, sizeof(path)) == NULL)
 	{
@@ -74,6 +76,40 @@ void ctrlFolderView()
 				terminateWindow(footerWindow);
 				endwin();
 				exit(0);
+			case 'r':
+				/* refactor to: getInput and return input. Maybe with pointer parameter. Would probably always be: Do that. scan. u sure? return string*/
+				wclear(footerWindow);
+				mvwprintw(footerWindow, 1, 1, "Rename %s to: ", dir[sel]->name);
+				box(footerWindow, 0, 0);
+				wrefresh(footerWindow);
+
+				curs_set(1);
+				echo();
+
+				flushinp();
+				mvwscanw(footerWindow, 1, 13 + strlen(dir[sel]->name), "%s", input);
+
+				wrefresh(footerWindow);
+
+				wclear(footerWindow);
+				mvwprintw(footerWindow, 1, 1, "Are you sure? [y/N] ");
+				box(footerWindow, 0, 0);
+				wrefresh(footerWindow);
+
+				char sure = getch();
+
+				noecho();
+				curs_set(0);
+
+				if(toupper(sure) == 'Y' && dir[sel]->s == F_FALSE)
+				{
+					rename(dir[sel]->name, input);	
+				} 
+				else
+				{
+					break;
+				}
+				return;
 			default:
 				continue;
 		}
@@ -82,7 +118,9 @@ void ctrlFolderView()
 		mvwprintw(leftPanelWindow, 2, 1, "Offset: %d", start);
 		mvwprintw(leftPanelWindow, 3, 1, "Total items: %d", amt);
 		mvwprintw(leftPanelWindow, 4, 1, "Total page items: %d", itemAmount);
+		mvwprintw(leftPanelWindow, 5, 1, "Lenght: %lu", 12 + strlen(dir[sel]->name));
 		printFolderMenu(rightPanelWindow,  sel%amt, start);
+		drawTopbars();
 	}
 	endwin();
 }
