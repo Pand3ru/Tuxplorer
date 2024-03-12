@@ -2,7 +2,7 @@
 
 Tuxplorer is a terminal-based file explorer, aimed at bringing the power and simplicity of file navigation and management to the terminal interface. Designed as my first real C project, Tuxplorer is currently in its early stages, featuring basic functionality with ambitions for a richer feature set in the future.
 
-[!Tuxplorer Screenshot](screenshots/tuxplorer_screenshotV0.1.png)
+![Tuxplorer Screenshot](screenshots/tuxplorer_screenshotV0.1.png)
 
 ## Current Features
 
