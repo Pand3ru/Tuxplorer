@@ -31,7 +31,7 @@ void terminateWindow(WINDOW *window)
 void drawTopbar(WINDOW *w, char *text)
 {
 	wattron(w, A_REVERSE);
-	mvwprintw(w, 1, 1, text);
+	mvwprintw(w, 1, 1, "%s", text);
 	wattroff(w, A_REVERSE);
 
 }
@@ -57,7 +57,7 @@ void drawTopbars()
 {
 	drawTopbar(rightPanelWindow, "PWD");
 	drawTopbar(leftPanelWindow, "Cool Folders");
-	drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[r] rename\t[d] delete file\t[q] quit");
+	drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[r] rename\t[d] delete file\t[c] create file\t[q] quit");
 }
 
 void drawBorders()

@@ -77,17 +77,9 @@ void ctrlFolderView()
 				endwin();
 				exit(0);
 			case 'r':
-				/* refactor to: getInput and return input. Maybe with pointer parameter. Would probably always be: Do that. scan. u sure? return string*/
 				promtMakeInputReady();
 
-				mvwprintw(footerWindow, 1, 1, "Rename %s to: ", dir[sel]->name);
-
-				box(footerWindow, 0, 0);
-				wrefresh(footerWindow);
-
-				mvwscanw(footerWindow, 1, 13 + strlen(dir[sel]->name), "%s", input);
-
-				wrefresh(footerWindow);
+				promtGetInput(input, "Rename to:");
 
 				if(promtConfirmation() && dir[sel]->s == F_FALSE)
 				{
@@ -107,6 +99,14 @@ void ctrlFolderView()
 					return;
 				} 
 				break;
+			case 'c':
+				promtMakeInputReady();
+
+				promtGetInput(input, "Create File:");
+
+				FILE* f = fopen(input, "a");
+				fclose(f);
+				return;
 
 			default:
 				continue;
@@ -156,4 +156,17 @@ void promtMakeInputReady()
 	echo();
 	flushinp();
 	wclear(footerWindow);
+}
+void promtGetInput(char *input, char *text)
+{
+	promtMakeInputReady();
+
+	mvwprintw(footerWindow, 1, 1, "%s", text);
+
+	box(footerWindow, 0, 0);
+	wrefresh(footerWindow);
+
+	mvwscanw(footerWindow, 1, strlen(text) + 2, "%s", input);
+
+	wrefresh(footerWindow);
 }
