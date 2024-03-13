@@ -11,11 +11,11 @@ Tuxplorer is a terminal-based file explorer, aimed at bringing the power and sim
 - **Vim Integration**: Open and edit text files directly in Vim by pressing enter on a selected file.
 - **File Operations**: Perform common file operations such as rename, delete, and create directly within Tuxplorer.
 - **Shortcuts**: Quick access shortcuts to frequently used directories such as Desktop, Documents, etc.
+- **Pin Folders**: Ability to pin favorite folders for easy access.
 
 ## Planned Features
 
-- **Config Files**: Customize Tuxplorer's behavior and appearance through user-defined configuration files.
-- **Pin Folders**: Ability to pin favorite folders for easy access.
+- **Config Files**: Customize Tuxplorer's behavior and appearance through user-defined configuration files. (Half done)
 
 ## Getting Started
 
