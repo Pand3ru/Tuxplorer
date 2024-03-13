@@ -19,7 +19,7 @@ Tuxplorer is a terminal-based file explorer, aimed at bringing the power and sim
 
 ## Getting Started
 
-To try out Tuxplorer, you'll need to have `gcc` and `ncurses` installed on your system.
+To try out Tuxplorer, you'll need to have `gcc`, `ncurses` and `libconfig` installed on your system.
 
 ### Installation
 
