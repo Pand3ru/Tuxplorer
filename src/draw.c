@@ -31,7 +31,6 @@ void drawTopbar(WINDOW *w, char *text)
 	wattron(w, A_REVERSE);
 	mvwprintw(w, 1, 1, "%s", text);
 	wattroff(w, A_REVERSE);
-
 }
 
 void initScreen()
@@ -62,9 +61,11 @@ void drawTopbars()
 
 	if(!isInWindowSelection && selectedWindow == 1)
 	{
-	      drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[r] rename\t[d] delete file\t[c] create file\t[ESC] window selection \t[q] quit");
+	      drawTopbar(footerWindow, "[j] down\t[k] up\t[i] toggle hidden content\t[r] rename\t[d] delete file\t[c] create file\t[p] pin selected\t[ESC] window selection \t[q] quit");
+	} else if(!isInWindowSelection && selectedWindow == 0) {
+		drawTopbar(footerWindow, "[j] down\t[k] up\t[ESC] window selection\t[r] remove pin\t[q] quit");
 	} else {
-		drawTopbar(footerWindow, "[j] down\t[k] up\t[ESC] window selection \t[q] quit");
+		drawTopbar(footerWindow, "[j] right\t[k] left\t[q] quit");
 	}
 }
 
