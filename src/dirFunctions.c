@@ -9,8 +9,7 @@
 /* Function to return a **dirContent so I can get Dir Content quickly. Probably slow af */
 struct dirContent **dirGetContent(const char *path)
 {
-	DIR *d;
-	struct dirent *entries;
+	struct dirent **entries;
 	int i = 0, size = 10;
 
 	struct dirContent **content = malloc(size * sizeof(struct dirContent*));
@@ -19,17 +18,13 @@ struct dirContent **dirGetContent(const char *path)
 		return NULL;
 	}
 
-	d = opendir(path);
-
-	if(d == NULL)
+	char firstLetter;
+	int n = scandir(path, &entries, NULL, alphasort);	
+	if(n == -1)
 	{
-		free(content);
 		return NULL;
 	}
-
-	char firstLetter;
-	
-	while((entries = readdir(d)) != NULL)
+	while(n--)
 	{
 		if(i >= size)
 		{
@@ -43,13 +38,12 @@ struct dirContent **dirGetContent(const char *path)
 					free(content[j]);      
 				}
 			free(content); 
-			closedir(d);   
 			return NULL;
 			}
 			content = newContent;
 		}
 
-		firstLetter = entries->d_name[0];
+		firstLetter = entries[0]->d_name[0];
 
 		if(!ignoreInvis && firstLetter == '.')
 		{
@@ -57,7 +51,7 @@ struct dirContent **dirGetContent(const char *path)
 		}
 
 		content[i] = malloc(sizeof(struct dirContent));
-		content[i]->name = strdup(entries->d_name);
+		content[i]->name = strdup(entries[i]->d_name);
 
 		if(content[i]->name == NULL)
 		{
@@ -67,16 +61,14 @@ struct dirContent **dirGetContent(const char *path)
 				free(content[j]);      
 			}
 			free(content); 
-			closedir(d);   
 			return NULL;
 		}
 		
-		content[i]->s = (entries->d_type == DT_DIR ? F_TRUE : F_FALSE);
+		content[i]->s = (entries[i]->d_type == DT_DIR ? F_TRUE : F_FALSE);
 
 		i++;
 	}
 	content[i] = NULL;
-	closedir(d);
 
 	struct dirContent **final = realloc(content, (i+1) * sizeof(struct dirContent*));
 	if(final == NULL)
