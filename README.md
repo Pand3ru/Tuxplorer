@@ -32,17 +32,6 @@ To try out Tuxplorer, you'll need to have `gcc` and `ncurses` installed on your 
 4. Run Tuxplorer:
 `./bin/tuxplorer`
 
-**NOTE**: Makefile currently lacks config creator. Config as of now only stores shortcuts. If you want to try: 
-1. Go into .config Folder
-`cd .config`
-2. Create tuxplorer folder
-`mkdir tuxplorer`
-3. create 'config.ini'
-`cd tuxplorer && touch config.ini`
-3. Edit with following format:
-`Displayname Path(starting with /home`
-
-
 ## Contributing
 
 While I am currently focusing on achieving personal development goals with Tuxplorer, contributions will be welcome in the future once the core functionality is established. This project serves as a learning journey for me, and I look forward to collaborating with the community to enhance Tuxplorer once the foundational features are in place.
