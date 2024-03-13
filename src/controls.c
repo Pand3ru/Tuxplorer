@@ -8,6 +8,7 @@
 #include "../include/globals.h"
 #include "../include/draw.h"
 #include "../include/dirFunctions.h"
+#include "../include/config.h"
 
 void windowSelector()
 {
@@ -38,9 +39,11 @@ void windowSelector()
 				isInWindowSelection = 0;
 				if(selectedWindow == 1)
 				{
+					drawTopbars();
 					ctrlFolderView();
 					return;
 				} else {
+					drawTopbars();
 					ctrlPinView();
 					return;
 				}
@@ -105,6 +108,9 @@ void ctrlPinView()
 				exit(0);
 			case 27: /* Esc */
 				isInWindowSelection = 1;
+				return;
+			case 'r':
+				configRemovePin(pins[sel]);
 				return;
 			default:
 				continue;
@@ -218,6 +224,15 @@ void ctrlFolderView()
 				return;
 			case 27: /* Esc */
 				isInWindowSelection = 1;
+				return;
+			case 'p':
+				//printf("%s\n", dir[sel]->name);
+				if(dir[sel]->s != F_TRUE || dir[sel]->name[0] == '.')
+				{
+					break;
+				}
+				configPinFolder(dir[sel]);
+				dirGetPinned();
 				return;
 			default:
 				continue;

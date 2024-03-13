@@ -20,11 +20,13 @@ struct dirContent **dirGetContent(const char *path)
 
 	char firstLetter;
 	int n = scandir(path, &entries, NULL, alphasort);	
+
 	if(n == -1)
 	{
 		return NULL;
 	}
-	while(n--)
+
+	for(int index = 0; index < n; index++)
 	{
 		if(i >= size)
 		{
@@ -43,7 +45,7 @@ struct dirContent **dirGetContent(const char *path)
 			content = newContent;
 		}
 
-		firstLetter = entries[0]->d_name[0];
+		firstLetter = entries[index]->d_name[0];
 
 		if(!ignoreInvis && firstLetter == '.')
 		{
@@ -51,7 +53,7 @@ struct dirContent **dirGetContent(const char *path)
 		}
 
 		content[i] = malloc(sizeof(struct dirContent));
-		content[i]->name = strdup(entries[i]->d_name);
+		content[i]->name = strdup(entries[index]->d_name);
 
 		if(content[i]->name == NULL)
 		{
@@ -64,10 +66,11 @@ struct dirContent **dirGetContent(const char *path)
 			return NULL;
 		}
 		
-		content[i]->s = (entries[i]->d_type == DT_DIR ? F_TRUE : F_FALSE);
+		content[i]->s = (entries[index]->d_type == DT_DIR ? F_TRUE : F_FALSE);
 
 		i++;
 	}
+
 	content[i] = NULL;
 
 	struct dirContent **final = realloc(content, (i+1) * sizeof(struct dirContent*));
