@@ -31,7 +31,7 @@ config:
 
 $(TARGET): $(OBJECTS)
 	@echo "Linking: " $(OBJECTS) " into " $(TARGET)
-	@$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	@$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "Compiling: " $<
