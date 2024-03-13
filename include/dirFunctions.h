@@ -17,7 +17,7 @@ struct dirContent
 };
 
 struct dirContent **dirGetContent(const char *path);
-struct dirContent** dirGetPinned();
+void dirGetPinned();
 
 char *readLine(FILE *file);
 

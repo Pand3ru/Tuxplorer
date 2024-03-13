@@ -1,6 +1,7 @@
 #include<dirent.h>
 #include<stdlib.h>
 #include<string.h>
+#include<libconfig.h>
 
 #include "../include/dirFunctions.h"
 #include "../include/globals.h"
@@ -88,123 +89,75 @@ struct dirContent **dirGetContent(const char *path)
 
 	return content;
 }
-struct dirContent** dirGetPinned()
+void freePins()
 {
-	homeDir = getenv("HOME");	
-	if(homeDir == NULL)
+	for(int i = 0; i < amount_pins; i++)
 	{
-		return NULL;
+		free(pins[i]->name);
+		free(pins[i]->path);
+		free(pins[i]);
 	}
-	
-	int bufSize = 1024, i = 0;
-	char *filePath = malloc(bufSize);
-
-	int needed = snprintf(filePath, bufSize, "%s/.config/tuxplorer/config.ini", homeDir);
-
-	char *tmpFilePath = realloc(filePath, needed + 1);
-
-	if(tmpFilePath != NULL)
-	{
-		filePath = tmpFilePath;
-	}
-
-	/* Config Path aquired */
-
-	FILE* fptr = fopen(filePath, "r");
-	free(filePath);
-
-
-	char *currentLine, *token;
-
-	struct dirContent **content = NULL;
-
-	while((currentLine = readLine(fptr)) != NULL)
-	{
-		content = realloc(content, (i + 1) * sizeof(struct dirContent*));
-		if(content == NULL)
-		{
-		    if (fptr != NULL) {
-			fclose(fptr);
-		    }
-		    for (int j = 0; j < i; j++) {
-			free(content[j]->name);
-			free(content[j]->path);
-			free(content[j]);
-		    }
-		        free(content);
-			free(currentLine);
-			return NULL;
-		}
-
-		content[i] = malloc(sizeof(struct dirContent));
-		if(content[i] == NULL)
-		{
-		    if (fptr != NULL) {
-			fclose(fptr);
-		    }
-		    for (int j = 0; j < i; j++) {
-			free(content[j]->name);
-			free(content[j]->path);
-			free(content[j]);
-		    }
-		        free(content);
-			free(currentLine);
-			return NULL;
-		}
-		token = strtok(currentLine, " ");
-		content[i]->name = token ? strdup(token) : strdup("");
-
-		token = strtok(NULL, " ");
-		content[i]->path = token ? strdup(token) : strdup("");
-		content[i]->s = F_TRUE;
-
-		free(currentLine);
-		i++;
-	}
-	fclose(fptr);
-	amount_pins = i;
-	return content;
+	free(pins);
 }
-
-char *readLine(FILE *file) 
+void dirGetPinned()
 {
-    if (file == NULL)
-    {
-        return NULL;
-    }
+	freePins();
+	int i = 0;
+	struct dirContent **pinnedDir = NULL;
 
-    int maximumLineLength = 128;
-    char *lineBuffer = malloc(maximumLineLength);
-    if (lineBuffer == NULL)
-    {
-        return NULL;
-    }
+	config_t cfg;
+	config_setting_t *setting, *currentElement;
 
-    int count = 0;
-    char ch = getc(file);
-    
-    if(ch == EOF)
-    {
-	    return NULL;
-    }
+	config_init(&cfg);
 
-    while ((ch != '\n') && (ch != EOF)) 
-    {
-        if (count == maximumLineLength - 1) 
+	if(!config_read_file(&cfg, configFile))
 	{
-            maximumLineLength += 128;
-            char *tempBuffer = realloc(lineBuffer, maximumLineLength);
-            if (tempBuffer == NULL) 
-	    {
-                free(lineBuffer);
-                return NULL;
-            }
-            lineBuffer = tempBuffer;
-        }
-        lineBuffer[count++] = ch;
-        ch = getc(file);
-    }
+		printf("\n%s:%d - %s | %s\n", config_error_file(&cfg),
+            config_error_line(&cfg), config_error_text(&cfg), configFile);
+        config_destroy(&cfg);
+		config_destroy(&cfg);
+		return;
+	}
 
-    lineBuffer[count] = '\0';
-    return lineBuffer; 
+	setting = config_lookup(&cfg, "pins");
+	if(setting == NULL)
+	{
+		config_destroy(&cfg);
+		return;
+	}
+
+	int c = config_setting_length(setting);
+
+	for(;i < c; i++)
+	{
+		const char *name, *path;
+		pinnedDir = realloc(pinnedDir, (i+1) * sizeof(struct dirContent*));
+		currentElement = config_setting_get_elem(setting, i);
+
+		name = config_setting_name(currentElement);
+		config_setting_lookup_string(setting, name, &path);
+
+		pinnedDir[i] = malloc(sizeof(struct dirContent));
+		if(pinnedDir[i] == NULL)
+		{
+			for(int j = 0; j < i; j++)
+			{
+				free(pinnedDir[j]->name);
+				free(pinnedDir[j]->path); 
+				free(pinnedDir[j]);
+			}
+			free(pinnedDir);
+			return;
+		}
+		pinnedDir[i]->name = strdup(name);
+		pinnedDir[i]->path = strdup(path);
+		pinnedDir[i]->s = F_TRUE;
+	}
+	pinnedDir = realloc(pinnedDir, (i+1) * sizeof(struct dirContent*));
+	pinnedDir[i] = NULL;
+
+	config_destroy(&cfg);
+	amount_pins = c;
+
+	pins = pinnedDir;
 }

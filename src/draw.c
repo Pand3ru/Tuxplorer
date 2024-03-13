@@ -4,6 +4,7 @@
 #include "../include/dirFunctions.h"
 #include "../include/controls.h"
 #include "../include/globals.h"
+#include "../include/config.h"
 
 /* Function that creates a WINDOW* instance */
 WINDOW *createWindow(int h, int w, int startx, int starty)
@@ -35,6 +36,9 @@ void drawTopbar(WINDOW *w, char *text)
 
 void initScreen()
 {
+	setHomeDir();
+	getConfigPath();
+
 	initscr();
 	start_color();
 	keypad(stdscr, TRUE);
