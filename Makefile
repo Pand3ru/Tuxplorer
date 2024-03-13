@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Iinclude
-LDFLAGS = -lncurses
+LDFLAGS = -lncurses -lconfig
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
@@ -8,14 +8,14 @@ CONFIG_DIR = $(HOME)/.config/tuxplorer
 SOURCES = $(wildcard $(SRC_DIR)/*.c)
 OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
 TARGET = $(BIN_DIR)/tuxplorer
-CONFIG_FILE = $(CONFIG_DIR)/config.ini
+CONFIG_FILE = $(CONFIG_DIR)/config.cfg
 
 # Dynamically generate the config content to account for different user home directories
 define CONFIG_CONTENT
-Home = $(HOME)
-Documents = $(HOME)/Documents
-Desktop = $(HOME)/Desktop
-Downloads = $(HOME)/Downloads
+pins: {
+	Desktop: "$(HOME)/Desktop",
+	Home: "$(HOME)"
+}
 endef
 export CONFIG_CONTENT
 

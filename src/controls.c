@@ -13,7 +13,7 @@ void windowSelector()
 {
 	char cwd[1024];
 
-	pins = dirGetPinned();
+	dirGetPinned();
 	dir = dirGetContent(getcwd(cwd, sizeof(cwd)));
 
 	printFolderMenu(leftPanelWindow, -1, 0, 2, pins, amount_pins);

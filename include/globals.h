@@ -16,9 +16,10 @@ extern int isInWindowSelection;
 
 extern int selectedWindow;
 
-extern char* textEditor;
+extern char *textEditor;
 
 extern char *homeDir;
+extern char *configFile;
 
 extern int amount_pins;
 

@@ -13,6 +13,7 @@ int selectedWindow = 1; // 1 is folderview (right Panel) 0 is Panelview (left Pa
 char *textEditor = "nvim"; // Change the name to your prefered Text Editor.
 
 char *homeDir = NULL;
+char *configFile = NULL;
 
 struct dirContent **dir = NULL;
 struct dirContent **pins = NULL;
