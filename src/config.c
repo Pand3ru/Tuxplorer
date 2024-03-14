@@ -88,3 +88,32 @@ int configRemovePin(struct dirContent *a)
 	config_destroy(&cfg);
 	return 1;
 }
+
+void configGetValues()
+{
+	int i = 0;
+
+	config_t cfg;
+	config_setting_t *setting;
+
+	config_init(&cfg);
+
+	if(!config_read_file(&cfg, configFile))
+	{
+		config_destroy(&cfg);
+		return;
+	}
+
+	setting = config_lookup(&cfg, "params");
+
+	if(setting == NULL)
+	{
+		config_destroy(&cfg);
+		return;
+	}
+	const char *editor;
+	config_setting_lookup_string(setting, "TextEditor", &editor);
+	textEditor = strdup(editor);
+	// Read and parse colors. This can be done by someone else. I have achieved everything I need with this app.
+	config_destroy(&cfg);
+}

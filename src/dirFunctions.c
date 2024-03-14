@@ -109,7 +109,6 @@ void dirGetPinned()
 	{
 		printf("\n%s:%d - %s | %s\n", config_error_file(&cfg),
             config_error_line(&cfg), config_error_text(&cfg), configFile);
-        config_destroy(&cfg);
 		config_destroy(&cfg);
 		return;
 	}

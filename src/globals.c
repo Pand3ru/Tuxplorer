@@ -10,7 +10,7 @@ int isInWindowSelection = 1;
 
 int selectedWindow = 1; // 1 is folderview (right Panel) 0 is Panelview (left Panel)
 
-char *textEditor = "nvim"; // Change the name to your prefered Text Editor.
+char *textEditor = "vim"; // Here to prevent sefaults
 
 char *homeDir = NULL;
 char *configFile = NULL;

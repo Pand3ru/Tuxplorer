@@ -37,6 +37,7 @@ void initScreen()
 {
 	setHomeDir();
 	getConfigPath();
+	configGetValues();
 
 	initscr();
 	start_color();

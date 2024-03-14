@@ -16,6 +16,9 @@ pins: {
 	Desktop: "$(HOME)/Desktop",
 	Home: "$(HOME)"
 }
+params: {
+	TextEditor: "vim"
+}
 endef
 export CONFIG_CONTENT
 

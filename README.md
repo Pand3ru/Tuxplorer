@@ -12,14 +12,12 @@ Tuxplorer is a terminal-based file explorer, aimed at bringing the power and sim
 - **File Operations**: Perform common file operations such as rename, delete, and create directly within Tuxplorer.
 - **Shortcuts**: Quick access shortcuts to frequently used directories such as Desktop, Documents, etc.
 - **Pin Folders**: Ability to pin favorite folders for easy access.
-
-## Planned Features
-
-- **Config Files**: Customize Tuxplorer's behavior and appearance through user-defined configuration files. (Half done)
+- **Config Files**: Customize Tuxplorer's behavior through user-defined configuration files.
 
 ## Getting Started
 
 To try out Tuxplorer, you'll need to have `gcc`, `ncurses` and `libconfig` installed on your system.
+I am currently working on a package build but for now this'll have to do.
 
 ### Installation
 

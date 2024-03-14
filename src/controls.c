@@ -98,7 +98,6 @@ void ctrlPinView()
 				chdir(pins[sel]->path);
 				boolean = 0;
 				selectedWindow = 1;
-				// Find a way to switch back. Maybe change void? if return = 1 start ctrlFolderView
 				return;
 			case 'q':
 				terminateWindow(rightPanelWindow);
@@ -173,7 +172,13 @@ void ctrlFolderView()
 				{
 					char command[256]; 
 					snprintf(command, sizeof(command), "%s %s", textEditor, dir[sel]->name);
+					endwin();
+					terminateWindow(footerWindow);
+					terminateWindow(rightPanelWindow);
+					terminateWindow(leftPanelWindow);
 					system(command);
+					clear();
+					return;
 				}
 				wclear(footerWindow);
 				chdir(dir[sel]->name);
@@ -190,6 +195,7 @@ void ctrlFolderView()
 				terminateWindow(leftPanelWindow);
 				terminateWindow(footerWindow);
 				endwin();
+				clear();
 				exit(0);
 			case 'r':
 				promtMakeInputReady();
