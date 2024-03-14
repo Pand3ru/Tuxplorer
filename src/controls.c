@@ -10,6 +10,19 @@
 #include "../include/dirFunctions.h"
 #include "../include/config.h"
 
+void terminateApp()
+{
+	char cwd[1024];
+	getcwd(cwd, sizeof(cwd));
+
+	terminateWindow(rightPanelWindow);
+	terminateWindow(leftPanelWindow);
+	terminateWindow(footerWindow);
+	endwin();
+	chdir(cwd);
+	exit(1);
+}
+
 void windowSelector()
 {
 	char cwd[1024];
@@ -33,6 +46,7 @@ void windowSelector()
 				terminateWindow(leftPanelWindow);
 				terminateWindow(footerWindow);
 				endwin();
+				chdir(cwd);
 				exit(0);
 				return;
 			case '\n':
@@ -100,11 +114,7 @@ void ctrlPinView()
 				selectedWindow = 1;
 				return;
 			case 'q':
-				terminateWindow(rightPanelWindow);
-				terminateWindow(leftPanelWindow);
-				terminateWindow(footerWindow);
-				endwin();
-				exit(0);
+				terminateApp();
 			case 27: /* Esc */
 				isInWindowSelection = 1;
 				return;
@@ -191,12 +201,7 @@ void ctrlFolderView()
 				chdir("..");
 				return;
 			case 'q':
-				terminateWindow(rightPanelWindow);
-				terminateWindow(leftPanelWindow);
-				terminateWindow(footerWindow);
-				endwin();
-				clear();
-				exit(0);
+				terminateApp();
 			case 'r':
 				promtMakeInputReady();
 

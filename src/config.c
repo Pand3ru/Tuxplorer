@@ -91,8 +91,6 @@ int configRemovePin(struct dirContent *a)
 
 void configGetValues()
 {
-	int i = 0;
-
 	config_t cfg;
 	config_setting_t *setting;
 

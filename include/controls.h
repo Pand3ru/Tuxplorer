@@ -7,5 +7,6 @@ int promtConfirmation();
 void promtMakeInputReady();
 void promtGetInput(char *input, char *text);
 void windowSelector();
+void terminateApp();
 
 #endif

@@ -8,6 +8,7 @@ CONFIG_DIR = $(HOME)/.config/tuxplorer
 SOURCES = $(wildcard $(SRC_DIR)/*.c)
 OBJECTS = $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES))
 TARGET = $(BIN_DIR)/tuxplorer
+BINDIR = $(DESTDIR)/bin
 CONFIG_FILE = $(CONFIG_DIR)/config.cfg
 
 # Dynamically generate the config content to account for different user home directories
@@ -42,6 +43,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	@rm -rf $(OBJ_DIR) $(BIN_DIR) $(CONFIG_DIR)
+install:
+	install -m 755 $(TARGET) $(BINDIR)
 
 .PHONY: all clean directories config
 
