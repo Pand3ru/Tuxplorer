@@ -1,4 +1,5 @@
 #include<ncurses.h>
+#include<unistd.h>
 
 #include "../include/draw.h"
 #include "../include/dirFunctions.h"
@@ -57,8 +58,11 @@ void createWindows()
 
 void drawTopbars()
 {
-	drawTopbar(rightPanelWindow, "PWD");
-	drawTopbar(leftPanelWindow, "Cool Folders");
+	char cwd[1024];
+	getcwd(cwd, sizeof(cwd));
+
+	drawTopbar(rightPanelWindow, cwd);
+	drawTopbar(leftPanelWindow, "Pinned Folders");
 
 	if(!isInWindowSelection && selectedWindow == 1)
 	{
