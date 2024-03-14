@@ -27,8 +27,8 @@ I am currently working on a package build but for now this'll have to do.
 `cd Tuxplorer`
 3. Compile the project:
 `make`
-4. Run Tuxplorer:
-`./bin/tuxplorer`
+4. Install:
+`sudo make install`
 
 ## Contributing
 
