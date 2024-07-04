@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Iinclude -I/usr/local/include/notcurses
-LDFLAGS = -lncurses -lconfig
+LDFLAGS = -lncurses -lconfig -lsixel -lm
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin

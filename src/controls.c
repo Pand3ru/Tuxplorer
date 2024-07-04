@@ -284,5 +284,6 @@ void openInTexteditor(int sel) {
 
 void handleMediaInput(WINDOW *w) {
   wgetch(w);
+  removeImage(w);
   terminateWindow(w);
 }

@@ -27,7 +27,7 @@ void terminateWindow(WINDOW *window) {
 }
 
 /* Function designed to draw a headline in the top-left of passed window */
-void drawTopbar(WINDOW *w, char *text) {
+void drawTopbar(WINDOW *w, char *text, ...) {
   wattron(w, A_REVERSE);
   mvwprintw(w, 1, 1, "%s", text);
   wattroff(w, A_REVERSE);
@@ -87,10 +87,12 @@ void drawBorders() {
 }
 
 WINDOW *createMediaWindow(int imageW, int imageH) {
+  // int win_height = imageH + 2; // Add space for borders
+  // int win_width = imageW + 2;  // Add space for borders
   int win_height = LINES - 5;
   int win_width = COLS * 0.8;
-  int startx = (COLS * 0.5) - (win_width * 0.5);
-  int starty = ((LINES - 3) * 0.5) - (win_height * 0.5);
+  int startx = (COLS - win_width) / 2;
+  int starty = (LINES - win_height) / 2;
   return createWindow(win_height, win_width, startx, starty);
 }
 

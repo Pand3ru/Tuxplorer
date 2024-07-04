@@ -7,7 +7,7 @@
 
 WINDOW *createWindow(int height, int width, int startx, int starty);
 void terminateWindow(WINDOW *w);
-void drawTopbar(WINDOW *w, char *text);
+void drawTopbar(WINDOW *w, char *text, ...);
 void drawLayout();
 void initScreen();
 void createWindows();
