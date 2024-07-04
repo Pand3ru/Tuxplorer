@@ -1,7 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include<ncurses.h>
+#include <ncurses.h>
 
 extern WINDOW *rightPanelWindow;
 extern WINDOW *leftPanelWindow;
