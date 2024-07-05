@@ -56,15 +56,28 @@ int getImageDimensions(const char *filename, int *width, int *height) {
       stbi_load(filename, &original_width, &original_height, &n, 0);
   if (data) {
     stbi_image_free(data);
+    printf("Original Width: %d, Original Height: %d\n", original_width,
+           original_height); // Debug
     calculate_new_dimensions(original_width, original_height, width, height,
                              COLS * 18, LINES * 8);
+    printf("New Width: %d, New Height: %d\n", *width, *height);
+    sleep(3);
     return 0;
   } else {
     return -1;
   }
 }
 
-int displayImage(const char *filename, int x, int y) {
+int displayImage(const char *filename, int new_width, int new_height,
+                 int startx, int starty) {
+  char string_width[128], string_height[128];
+  sprintf(string_width, "%d", new_width);
+  sprintf(string_height, "%d", new_height);
+
+  printf("HERE: %s, %s\nAND: %d, %d\n", string_width, string_height, startx,
+         starty);
+  sleep(3);
+
   const char *term = getenv("TERM");
   if (term == NULL) {
     fprintf(stderr, "Cannot determine terminal type.\n");
@@ -75,7 +88,9 @@ int displayImage(const char *filename, int x, int y) {
     fprintf(stdout, "\033[?80h"); // Enable SIXEL mode in xterm
   } else if (strcmp(term, "xterm-kitty") == 0) {
     char command[256];
-    snprintf(command, sizeof(command), "kitty +kitten icat %s", filename);
+    snprintf(command, sizeof(command),
+             "kitty +kitten icat --scale-up --place=%dx%d@%dx%d %s",
+             new_width / 8, new_height / 3, startx, starty, filename);
     system(command);
     return EXIT_SUCCESS;
   } else if (strcmp(term, "konsole") == 0) {
@@ -85,6 +100,7 @@ int displayImage(const char *filename, int x, int y) {
             term);
     return EXIT_FAILURE;
   }
+
   // Initialize SIXEL status variable
   SIXELSTATUS status;
   sixel_encoder_t *encoder;
@@ -93,17 +109,15 @@ int displayImage(const char *filename, int x, int y) {
   if (SIXEL_FAILED(status)) {
     return EXIT_FAILURE;
   }
-  char string_x[128], string_y[128];
-  sprintf(string_y, "%d", y);
-  sprintf(string_x, "%d", x);
 
-  status = sixel_encoder_setopt(encoder, SIXEL_OPTFLAG_HEIGHT, string_y);
+  // Set the width and height for the sixel encoder
+  status = sixel_encoder_setopt(encoder, SIXEL_OPTFLAG_WIDTH, string_width);
   if (SIXEL_FAILED(status)) {
     sixel_encoder_unref(encoder);
     return EXIT_FAILURE;
   }
 
-  status = sixel_encoder_setopt(encoder, SIXEL_OPTFLAG_WIDTH, string_x);
+  status = sixel_encoder_setopt(encoder, SIXEL_OPTFLAG_HEIGHT, string_height);
   if (SIXEL_FAILED(status)) {
     sixel_encoder_unref(encoder);
     return EXIT_FAILURE;
@@ -133,7 +147,7 @@ void playMedia(char *filename) {
   drawMediaBorder(w);
 
   // Render the image
-  if (displayImage(filename, outx, outy) != 0) {
+  if (displayImage(filename, imageW, imageH, outx, outy) != 0) {
     fprintf(stderr, "Error displaying image.\n");
     return;
   }

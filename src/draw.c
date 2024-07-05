@@ -97,11 +97,11 @@ WINDOW *createMediaWindow(int imageW, int imageH, int *outx, int *outy) {
   if (win_height > LINES)
     win_height = LINES;
 
-  *outx = win_width - 2;
-  *outy = win_height - 2;
-
   int startx = (COLS - win_width) / 2;
   int starty = (LINES - win_height) / 2;
+
+  *outx = startx + 1;
+  *outy = starty + 1;
 
   // printf("Window dimensions (chars): %d, %d\n", win_width, win_height);
   // printf("NCURSES dimensions (chars): %d, %d\n", COLS, LINES);
