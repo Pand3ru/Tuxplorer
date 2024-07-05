@@ -15,6 +15,6 @@ void drawTopbars();
 void printFolderMenu(WINDOW *w, int highlight, int start, int offset,
                      struct dirContent **dire, int amount);
 void drawMediaBorder(WINDOW *w);
-WINDOW *createMediaWindow(int imageW, int imageH);
+WINDOW *createMediaWindow(int imageW, int imageH, int *outx, int *outy);
 
 #endif

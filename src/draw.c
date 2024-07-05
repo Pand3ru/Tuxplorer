@@ -85,14 +85,27 @@ void drawBorders() {
   wrefresh(leftPanelWindow);
   wrefresh(footerWindow);
 }
+WINDOW *createMediaWindow(int imageW, int imageH, int *outx, int *outy) {
+  int char_width = 8;
+  int char_height = 18;
 
-WINDOW *createMediaWindow(int imageW, int imageH) {
-  // int win_height = imageH + 2; // Add space for borders
-  // int win_width = imageW + 2;  // Add space for borders
-  int win_height = LINES - 5;
-  int win_width = COLS * 0.8;
+  int win_width = (imageW / char_width) + 2;
+  int win_height = (imageH / char_height) + 2;
+
+  if (win_width > COLS)
+    win_width = COLS;
+  if (win_height > LINES)
+    win_height = LINES;
+
+  *outx = win_width - 2;
+  *outy = win_height - 2;
+
   int startx = (COLS - win_width) / 2;
   int starty = (LINES - win_height) / 2;
+
+  // printf("Window dimensions (chars): %d, %d\n", win_width, win_height);
+  // printf("NCURSES dimensions (chars): %d, %d\n", COLS, LINES);
+  // printf("Window start position: %d, %d\n", startx, starty);
   return createWindow(win_height, win_width, startx, starty);
 }
 

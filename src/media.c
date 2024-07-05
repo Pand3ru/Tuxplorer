@@ -13,7 +13,6 @@
 
 #include "../include/controls.h"
 #include "../include/draw.h"
-#include "../include/globals.h"
 #include "../include/media.h"
 
 bool isMediaFile(const char *filename) {
@@ -32,20 +31,40 @@ bool isMediaFile(const char *filename) {
   return false;
 }
 
+void calculate_new_dimensions(int original_width, int original_height,
+                              int *new_width, int *new_height, int max_width,
+                              int max_height) {
+  float aspect_ratio = (float)original_width / (float)original_height;
+
+  if (original_width > max_width || original_height > max_height) {
+    if ((float)max_width / (float)max_height > aspect_ratio) {
+      *new_height = max_height;
+      *new_width = (int)(max_height * aspect_ratio);
+    } else {
+      *new_width = max_width;
+      *new_height = (int)(max_width / aspect_ratio);
+    }
+  } else {
+    *new_width = original_width;
+    *new_height = original_height;
+  }
+}
+
 int getImageDimensions(const char *filename, int *width, int *height) {
-  int n;
-  unsigned char *data = stbi_load(filename, width, height, &n, 0);
+  int original_width, original_height, n;
+  unsigned char *data =
+      stbi_load(filename, &original_width, &original_height, &n, 0);
   if (data) {
     stbi_image_free(data);
+    calculate_new_dimensions(original_width, original_height, width, height,
+                             COLS * 18, LINES * 8);
     return 0;
   } else {
     return -1;
   }
 }
 
-// Function to display image using sixel
-int displayImage(const char *filename) {
-  // Get the terminal type from the environment
+int displayImage(const char *filename, int x, int y) {
   const char *term = getenv("TERM");
   if (term == NULL) {
     fprintf(stderr, "Cannot determine terminal type.\n");
@@ -53,10 +72,8 @@ int displayImage(const char *filename) {
   }
 
   if (strcmp(term, "xterm") == 0 || strcmp(term, "xterm-256color") == 0) {
-    // Ensure xterm has proper SIXEL support
     fprintf(stdout, "\033[?80h"); // Enable SIXEL mode in xterm
   } else if (strcmp(term, "xterm-kitty") == 0) {
-    // Use kitty's icat tool
     char command[256];
     snprintf(command, sizeof(command), "kitty +kitten icat %s", filename);
     system(command);
@@ -68,25 +85,36 @@ int displayImage(const char *filename) {
             term);
     return EXIT_FAILURE;
   }
-
   // Initialize SIXEL status variable
   SIXELSTATUS status;
-
-  // Initialize sixel encoder
   sixel_encoder_t *encoder;
+
   status = sixel_encoder_new(&encoder, NULL);
   if (SIXEL_FAILED(status)) {
     return EXIT_FAILURE;
   }
+  char string_x[128], string_y[128];
+  sprintf(string_y, "%d", y);
+  sprintf(string_x, "%d", x);
 
-  // Load and encode the image from a file
+  status = sixel_encoder_setopt(encoder, SIXEL_OPTFLAG_HEIGHT, string_y);
+  if (SIXEL_FAILED(status)) {
+    sixel_encoder_unref(encoder);
+    return EXIT_FAILURE;
+  }
+
+  status = sixel_encoder_setopt(encoder, SIXEL_OPTFLAG_WIDTH, string_x);
+  if (SIXEL_FAILED(status)) {
+    sixel_encoder_unref(encoder);
+    return EXIT_FAILURE;
+  }
+
   status = sixel_encoder_encode(encoder, filename);
   if (SIXEL_FAILED(status)) {
     sixel_encoder_unref(encoder);
     return EXIT_FAILURE;
   }
 
-  // Cleanup
   sixel_encoder_unref(encoder);
   return EXIT_SUCCESS;
 }
@@ -99,18 +127,13 @@ void playMedia(char *filename) {
     fprintf(stderr, "Error getting image dimensions.\n");
     return;
   }
-  // Create media window based on image dimensions
-  WINDOW *w = createMediaWindow(imageW, imageH);
+  int outx, outy;
+  WINDOW *w = createMediaWindow(imageW, imageH, &outx, &outy);
 
-  char s[50];
-
-  sprintf(s, "SIZE: %d, %d", imageW, imageH);
-
-  drawTopbar(w, s);
   drawMediaBorder(w);
 
   // Render the image
-  if (displayImage(filename) != 0) {
+  if (displayImage(filename, outx, outy) != 0) {
     fprintf(stderr, "Error displaying image.\n");
     return;
   }
@@ -118,18 +141,16 @@ void playMedia(char *filename) {
   handleMediaInput(w);
 }
 void removeImage(WINDOW *w) {
-  wclear(w);    // Clear the window content
-  box(w, 0, 0); // Redraw the border
-  wrefresh(w);  // Refresh the window to update display
+  wclear(w);
+  box(w, 0, 0);
+  wrefresh(w);
 
-  // Reset the terminal display mode to clear the SIXEL image
   const char *term = getenv("TERM");
   if (term != NULL &&
       (strcmp(term, "xterm") == 0 || strcmp(term, "xterm-256color") == 0)) {
     fprintf(stdout, "\033[2J\033[H"); // Clear the screen and move the cursor to
                                       // the home position
   } else if (term != NULL && strcmp(term, "xterm-kitty") == 0) {
-    // kitty terminal handling if needed
     char command[256];
     snprintf(command, sizeof(command), "kitty +kitten icat --clear");
     system(command);
