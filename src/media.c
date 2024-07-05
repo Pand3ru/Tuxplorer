@@ -56,12 +56,8 @@ int getImageDimensions(const char *filename, int *width, int *height) {
       stbi_load(filename, &original_width, &original_height, &n, 0);
   if (data) {
     stbi_image_free(data);
-    printf("Original Width: %d, Original Height: %d\n", original_width,
-           original_height); // Debug
     calculate_new_dimensions(original_width, original_height, width, height,
                              COLS * 18, LINES * 8);
-    printf("New Width: %d, New Height: %d\n", *width, *height);
-    sleep(3);
     return 0;
   } else {
     return -1;
@@ -74,9 +70,7 @@ int displayImage(const char *filename, int new_width, int new_height,
   sprintf(string_width, "%d", new_width);
   sprintf(string_height, "%d", new_height);
 
-  printf("HERE: %s, %s\nAND: %d, %d\n", string_width, string_height, startx,
-         starty);
-  sleep(3);
+  printf("%s\n", filename);
 
   const char *term = getenv("TERM");
   if (term == NULL) {
@@ -84,17 +78,13 @@ int displayImage(const char *filename, int new_width, int new_height,
     return EXIT_FAILURE;
   }
 
-  if (strcmp(term, "xterm") == 0 || strcmp(term, "xterm-256color") == 0) {
-    fprintf(stdout, "\033[?80h"); // Enable SIXEL mode in xterm
-  } else if (strcmp(term, "xterm-kitty") == 0) {
+  if (strcmp(term, "xterm-kitty") == 0) {
     char command[256];
     snprintf(command, sizeof(command),
              "kitty +kitten icat --scale-up --place=%dx%d@%dx%d %s",
              new_width / 8, new_height / 3, startx, starty, filename);
     system(command);
     return EXIT_SUCCESS;
-  } else if (strcmp(term, "konsole") == 0) {
-    // Assume konsole works with SIXEL
   } else {
     fprintf(stderr, "Terminal type %s not supported for SIXEL graphics.\n",
             term);
