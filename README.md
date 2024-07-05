@@ -13,10 +13,12 @@ Tuxplorer is a terminal-based file explorer, aimed at bringing the power and sim
 - **Shortcuts**: Quick access shortcuts to frequently used directories such as Desktop, Documents, etc.
 - **Pin Folders**: Ability to pin favorite folders for easy access.
 - **Config Files**: Customize Tuxplorer's behavior through user-defined configuration files.
+- **Image Preview**: Preview images. (Note: currently only works on kitty terminals without tmux!)
 
 ## Getting Started
 
-To try out Tuxplorer, you'll need to have `gcc`, `ncurses` and `libconfig` installed on your system.
+To try out Tuxplorer, you'll need to have `gcc`, `ncurses`, `libsixel` and `libconfig` installed on your system.
+It is also using [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h) so the feature may not work without it.
 I am currently working on a package build but for now this'll have to do.
 
 ### Installation

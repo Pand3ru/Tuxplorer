@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Iinclude
-LDFLAGS = -lncurses -lconfig
+CFLAGS = -Wall -Iinclude -I/usr/local/include/notcurses
+LDFLAGS = -lncurses -lconfig -lsixel -lm
 SRC_DIR = src
 OBJ_DIR = obj
 BIN_DIR = bin
@@ -43,8 +43,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	@rm -rf $(OBJ_DIR) $(BIN_DIR) $(CONFIG_DIR)
+
 install:
 	install -m 755 $(TARGET) $(BINDIR)
 
 .PHONY: all clean directories config
-
