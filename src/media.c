@@ -17,7 +17,7 @@
 
 bool isMediaFile(const char *filename) {
   const char *media_extensions[] = {".png", ".jpg", ".jpeg",
-                                    ".gif", ".mp4", ".avi"};
+                                    ".gif", ".mp4", ".avi", ".JPG", ".PNG", ".JPEG"};
   int num_media_extensions =
       sizeof(media_extensions) / sizeof(media_extensions[0]);
   const char *extension = strrchr(filename, '.');
@@ -86,11 +86,12 @@ int displayImage(const char *filename, int new_width, int new_height,
     system(command);
     return EXIT_SUCCESS;
   } else {
-    fprintf(stderr, "Terminal type %s not supported for SIXEL graphics.\n",
-            term);
+    //fprintf(stderr, "Terminal type %s not supported for SIXEL graphics.\n",
+     //       term);
     return EXIT_FAILURE;
   }
 
+  // Dead code
   // Initialize SIXEL status variable
   SIXELSTATUS status;
   sixel_encoder_t *encoder;
@@ -138,7 +139,7 @@ void playMedia(char *filename) {
 
   // Render the image
   if (displayImage(filename, imageW, imageH, outx, outy) != 0) {
-    fprintf(stderr, "Error displaying image.\n");
+    //fprintf(stderr, "Error displaying image.\n");
     return;
   }
 
